@@ -1,536 +1,528 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
-const styles = {
-  pageHeader: {
-    padding: '32px',
-    paddingBottom: '20px',
-    backgroundColor: '#F9FAFB'
-  },
-  breadcrumb: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    fontSize: '13px',
-    marginBottom: '12px'
-  },
-  breadcrumbLink: {
-    color: '#6B7280',
-    textDecoration: 'none'
-  },
-  breadcrumbSep: {
-    color: '#D1D5DB'
-  },
-  breadcrumbCurrent: {
-    color: '#111827',
-    fontWeight: '500'
-  },
-  pageTitle: {
-    fontSize: '28px',
-    fontWeight: '700',
-    color: '#111827',
-    margin: '0 0 4px 0'
-  },
-  pageSubtitle: {
-    fontSize: '14px',
-    color: '#6B7280',
-    margin: 0
-  },
-  actionsBar: {
-    padding: '0 32px 20px',
-    display: 'flex',
-    gap: '12px',
-    justifyContent: 'flex-end',
-    backgroundColor: '#F9FAFB'
-  },
-  btnExport: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    padding: '8px 16px',
-    backgroundColor: 'white',
-    border: '1px solid #E5E7EB',
-    borderRadius: '8px',
-    fontSize: '14px',
-    fontWeight: '500',
-    color: '#374151',
-    cursor: 'pointer'
-  },
-  btnAdd: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    padding: '8px 20px',
-    backgroundColor: '#3B82F6',
-    border: 'none',
-    borderRadius: '8px',
-    fontSize: '14px',
-    fontWeight: '500',
-    color: 'white',
-    cursor: 'pointer'
-  },
-  filtersBar: {
-    padding: '20px 32px',
-    backgroundColor: 'white',
-    borderBottom: '1px solid #E5E7EB',
-    display: 'flex',
-    gap: '16px',
-    alignItems: 'center'
-  },
-  searchBox: {
-    flex: 1,
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-    padding: '8px 16px',
-    backgroundColor: '#F9FAFB',
-    borderRadius: '8px',
-    border: '1px solid #E5E7EB'
-  },
-  searchIcon: {
-    fontSize: '16px'
-  },
-  searchInput: {
-    flex: 1,
-    border: 'none',
-    backgroundColor: 'transparent',
-    outline: 'none',
-    fontSize: '14px',
-    color: '#111827'
-  },
-  filterGroup: {
-    display: 'flex',
-    gap: '12px',
-    alignItems: 'center'
-  },
-  filterLabel: {
-    fontSize: '13px',
-    fontWeight: '500',
-    color: '#6B7280'
-  },
-  filterSelect: {
-    padding: '6px 12px',
-    border: '1px solid #E5E7EB',
-    borderRadius: '6px',
-    fontSize: '14px',
-    backgroundColor: 'white',
-    color: '#374151',
-    cursor: 'pointer'
-  },
-  btnRefresh: {
-    width: '32px',
-    height: '32px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'white',
-    border: '1px solid #E5E7EB',
-    borderRadius: '6px',
-    fontSize: '16px',
-    cursor: 'pointer'
-  },
-  dataTable: {
-    backgroundColor: 'white',
-    margin: '0 32px 32px'
-  },
-  tableHeader: {
-    display: 'grid',
-    gridTemplateColumns: '50px 2fr 1.2fr 1fr 1fr 1fr 100px',
-    padding: '16px 20px',
-    borderBottom: '1px solid #E5E7EB',
-    fontSize: '11px',
-    fontWeight: '600',
-    color: '#6B7280',
-    textTransform: 'uppercase',
-    letterSpacing: '0.5px'
-  },
-  tableRow: {
-    display: 'grid',
-    gridTemplateColumns: '50px 2fr 1.2fr 1fr 1fr 1fr 100px',
-    padding: '16px 20px',
-    borderBottom: '1px solid #F3F4F6',
-    alignItems: 'center'
-  },
-  taskerInfo: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px'
-  },
-  taskerAvatar: {
-    width: '40px',
-    height: '40px',
-    borderRadius: '50%',
-    backgroundColor: '#DBEAFE',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '14px',
-    fontWeight: '600',
-    color: '#3B82F6'
-  },
-  taskerName: {
-    fontSize: '14px',
-    fontWeight: '600',
-    color: '#111827'
-  },
-  taskerEmail: {
-    fontSize: '13px',
-    color: '#6B7280'
-  },
-  categoryBadge: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '6px',
-    padding: '4px 12px',
-    backgroundColor: '#F3F4F6',
-    borderRadius: '6px',
-    fontSize: '13px',
-    fontWeight: '500',
-    color: '#374151'
-  },
-  statusBadge: {
-    display: 'inline-block',
-    padding: '4px 12px',
-    borderRadius: '12px',
-    fontSize: '12px',
-    fontWeight: '500'
-  },
-  statusVerified: {
-    backgroundColor: '#D1FAE5',
-    color: '#059669'
-  },
-  statusPending: {
-    backgroundColor: '#FEF3C7',
-    color: '#D97706'
-  },
-  statusSuspended: {
-    backgroundColor: '#FEE2E2',
-    color: '#DC2626'
-  },
-  ratingDisplay: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '4px',
-    fontSize: '14px'
-  },
-  ratingValue: {
-    fontWeight: '600',
-    color: '#111827'
-  },
-  ratingCount: {
-    color: '#9CA3AF',
-    fontSize: '13px'
-  },
-  noRating: {
-    color: '#9CA3AF'
-  },
-  earningsValue: {
-    fontSize: '14px',
-    fontWeight: '600',
-    color: '#111827'
-  },
-  btnMenu: {
-    width: '32px',
-    height: '32px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
-    border: '1px solid #E5E7EB',
-    borderRadius: '6px',
-    fontSize: '18px',
-    cursor: 'pointer',
-    color: '#6B7280'
-  },
-  tableFooter: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '16px 20px',
-    borderTop: '1px solid #E5E7EB'
-  },
-  paginationInfo: {
-    fontSize: '14px',
-    color: '#6B7280'
-  },
-  paginationControls: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '16px'
-  },
-  rowsLabel: {
-    fontSize: '14px',
-    color: '#6B7280'
-  },
-  rowsSelect: {
-    padding: '4px 8px',
-    border: '1px solid #E5E7EB',
-    borderRadius: '6px',
-    fontSize: '14px',
-    backgroundColor: 'white',
-    cursor: 'pointer'
-  },
-  pageButtons: {
-    display: 'flex',
-    gap: '4px'
-  },
-  pageBtn: {
-    padding: '6px 12px',
-    border: '1px solid #E5E7EB',
-    borderRadius: '6px',
-    backgroundColor: 'white',
-    fontSize: '14px',
-    cursor: 'pointer',
-    color: '#374151'
-  },
-  pageBtnActive: {
-    backgroundColor: '#3B82F6',
-    color: 'white',
-    border: '1px solid #3B82F6'
-  },
-  pageBtnDisabled: {
-    opacity: 0.5,
-    cursor: 'not-allowed'
-  }
+// SVG Icons
+const HomeIcon = () => (
+  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+    <polyline points="9 22 9 12 15 12 15 22"/>
+  </svg>
+)
+
+const ChevronRightIcon = () => (
+  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <polyline points="9 18 15 12 9 6"/>
+  </svg>
+)
+
+const DownloadIcon = () => (
+  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+    <polyline points="7 10 12 15 17 10"/>
+    <line x1="12" y1="15" x2="12" y2="3"/>
+  </svg>
+)
+
+const PlusIcon = () => (
+  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <line x1="12" y1="5" x2="12" y2="19"/>
+    <line x1="5" y1="12" x2="19" y2="12"/>
+  </svg>
+)
+
+const SearchIcon = () => (
+  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="11" cy="11" r="8"/>
+    <path d="m21 21-4.35-4.35"/>
+  </svg>
+)
+
+const ChevronDownIcon = () => (
+  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <polyline points="6 9 12 15 18 9"/>
+  </svg>
+)
+
+const StarIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+  </svg>
+)
+
+const MoreVerticalIcon = () => (
+  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="12" r="1" fill="currentColor"/>
+    <circle cx="12" cy="5" r="1" fill="currentColor"/>
+    <circle cx="12" cy="19" r="1" fill="currentColor"/>
+  </svg>
+)
+
+const BroomIcon = () => (
+  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+    <path d="M2 17l10 5 10-5"/>
+    <path d="M2 12l10 5 10-5"/>
+  </svg>
+)
+
+const WrenchIcon = () => (
+  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+  </svg>
+)
+
+const TruckIcon = () => (
+  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <rect x="1" y="3" width="15" height="13"/>
+    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+    <circle cx="5.5" cy="18.5" r="2.5"/>
+    <circle cx="18.5" cy="18.5" r="2.5"/>
+  </svg>
+)
+
+const ZapIcon = () => (
+  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+  </svg>
+)
+
+const FlowerIcon = () => (
+  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="12" r="3"/>
+    <path d="M12 2a10 10 0 0 0 0 20 10 10 0 0 0 0-20z"/>
+  </svg>
+)
+
+const RefreshIcon = () => (
+  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <polyline points="23 4 23 10 17 10"/>
+    <polyline points="1 20 1 14 7 14"/>
+    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+  </svg>
+)
+
+// Service Category Icons
+const categoryIcons = {
+  'Cleaning': BroomIcon,
+  'Plumbing': WrenchIcon,
+  'Moving': TruckIcon,
+  'Electrical': ZapIcon,
+  'Gardening': FlowerIcon,
 }
 
-const taskersData = [
+// Dummy Data
+const taskers = [
   {
     id: 1,
     name: 'Alice Freeman',
-    email: 'alice.f@example.com',
-    avatar: 'AF',
-    category: 'Cleaning',
-    categoryIcon: '🧹',
+    email: 'alice.freeman@example.com',
+    avatar: 'https://i.pravatar.cc/150?img=1',
+    serviceCategory: 'Cleaning',
     status: 'Verified',
     rating: 4.9,
-    reviews: 174,
-    earnings: '$2,450.00',
+    reviews: 164,
+    earnings: '$2,450.00'
   },
   {
     id: 2,
     name: 'Bob Smith',
-    email: 'bob.plumb@example.com',
-    avatar: 'BS',
-    category: 'Plumbing',
-    categoryIcon: '🔧',
+    email: 'bob.smith@example.com',
+    avatar: 'https://i.pravatar.cc/150?img=2',
+    serviceCategory: 'Plumbing',
     status: 'Pending',
-    rating: null,
+    rating: 0,
     reviews: 0,
-    earnings: '$0.00',
+    earnings: '$0.00'
   },
   {
     id: 3,
     name: 'Charlie Davis',
-    email: 'charlie.d@example.com',
-    avatar: 'CD',
-    category: 'Moving',
-    categoryIcon: '📦',
+    email: 'charlie.davis@example.com',
+    avatar: 'https://i.pravatar.cc/150?img=3',
+    serviceCategory: 'Moving',
     status: 'Verified',
     rating: 4.8,
-    reviews: 96,
-    earnings: '$1,250.00',
+    reviews: 98,
+    earnings: '$1,250.00'
   },
   {
     id: 4,
     name: 'Diana Prince',
-    email: 'diana.p@example.com',
-    avatar: 'DP',
-    category: 'Electrical',
-    categoryIcon: '⚡',
+    email: 'diana.prince@example.com',
+    avatar: 'https://i.pravatar.cc/150?img=4',
+    serviceCategory: 'Electrical',
     status: 'Suspended',
     rating: 5.0,
     reviews: 12,
-    earnings: '$3,100.00',
+    earnings: '$3,100.00'
   },
   {
     id: 5,
     name: 'Evan Wright',
-    email: 'evan.garden@example.com',
-    avatar: 'EW',
-    category: 'Gardening',
-    categoryIcon: '🌱',
+    email: 'evan.wright@example.com',
+    avatar: 'https://i.pravatar.cc/150?img=5',
+    serviceCategory: 'Gardening',
     status: 'Verified',
     rating: 4.2,
     reviews: 8,
-    earnings: '$500.00',
+    earnings: '$500.00'
   },
 ]
 
 export default function TaskerIndex() {
   const [searchQuery, setSearchQuery] = useState('')
-  const [statusFilter, setStatusFilter] = useState('All Status')
-  const [categoryFilter, setCategoryFilter] = useState('Category')
-  const [ratingFilter, setRatingFilter] = useState('Rating')
+  const [statusFilter, setStatusFilter] = useState('all')
+  const [categoryFilter, setCategoryFilter] = useState('all')
+  const [ratingFilter, setRatingFilter] = useState('all')
+  const [currentPage, setCurrentPage] = useState(1)
   const [rowsPerPage, setRowsPerPage] = useState(5)
+  const [selectedTaskers, setSelectedTaskers] = useState([])
 
-  const statusStyle = (status) => ({
-    ...styles.statusBadge,
-    ...(status === 'Verified'
-      ? styles.statusVerified
-      : status === 'Pending'
-        ? styles.statusPending
-        : styles.statusSuspended),
-  })
+  const totalEntries = 2450
+  const startEntry = (currentPage - 1) * rowsPerPage + 1
+  const endEntry = Math.min(currentPage * rowsPerPage, totalEntries)
+
+  const toggleSelectAll = () => {
+    if (selectedTaskers.length === taskers.length) {
+      setSelectedTaskers([])
+    } else {
+      setSelectedTaskers(taskers.map(t => t.id))
+    }
+  }
+
+  const toggleSelect = (id) => {
+    if (selectedTaskers.includes(id)) {
+      setSelectedTaskers(selectedTaskers.filter(t => t !== id))
+    } else {
+      setSelectedTaskers([...selectedTaskers, id])
+    }
+  }
+
+  const getStatusBadge = (status) => {
+    const styles = {
+      'Verified': 'bg-emerald-100 text-emerald-700',
+      'Pending': 'bg-amber-100 text-amber-700',
+      'Suspended': 'bg-red-100 text-red-700'
+    }
+    return styles[status] || 'bg-gray-100 text-gray-700'
+  }
 
   return (
-    <div style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', backgroundColor: '#F9FAFB', minHeight: '100vh' }}>
-      <div style={styles.pageHeader}>
-        <div style={styles.breadcrumb}>
-          <a href="#" style={styles.breadcrumbLink}>Home</a>
-          <span style={styles.breadcrumbSep}>›</span>
-          <a href="#" style={styles.breadcrumbLink}>Management</a>
-          <span style={styles.breadcrumbSep}>›</span>
-          <span style={styles.breadcrumbCurrent}>Taskers</span>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-gray-50 px-4 md:px-8 pt-8 pb-5">
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-2 text-sm mb-3">
+          <Link to="/" className="text-gray-500 hover:text-gray-700 flex items-center gap-1">
+            <HomeIcon />
+            <span>Home</span>
+          </Link>
+          <ChevronRightIcon />
+          <span className="text-gray-500">Management</span>
+          <ChevronRightIcon />
+          <span className="text-gray-900 font-medium">Taskers</span>
         </div>
-        <h1 style={styles.pageTitle}>Tasker Management</h1>
-        <p style={styles.pageSubtitle}>View and manage all registered service providers.</p>
-      </div>
 
-      <div style={styles.actionsBar}>
-        <button style={styles.btnExport}>
-          <span>📥</span>
-          Export
-        </button>
-        <Link to="/taskers/create" style={{ ...styles.btnAdd, textDecoration: 'none' }}>
-          <span>+</span>
-          Add New Tasker
-        </Link>
-      </div>
-
-      <div style={styles.filtersBar}>
-        <div style={styles.searchBox}>
-          <span style={styles.searchIcon}>🔍</span>
-          <input
-            style={styles.searchInput}
-            type="text"
-            placeholder="Search by name, email or service..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-        <div style={styles.filterGroup}>
-          <span style={styles.filterLabel}>Filter by:</span>
-          <select
-            style={styles.filterSelect}
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
-            <option>All Status</option>
-            <option>Verified</option>
-            <option>Pending</option>
-            <option>Suspended</option>
-          </select>
-          <select
-            style={styles.filterSelect}
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-          >
-            <option>Category</option>
-            <option>Cleaning</option>
-            <option>Plumbing</option>
-            <option>Moving</option>
-            <option>Electrical</option>
-            <option>Gardening</option>
-          </select>
-          <select
-            style={styles.filterSelect}
-            value={ratingFilter}
-            onChange={(e) => setRatingFilter(e.target.value)}
-          >
-            <option>Rating</option>
-            <option>5 Stars</option>
-            <option>4+ Stars</option>
-            <option>3+ Stars</option>
-          </select>
-          <button style={styles.btnRefresh} title="Refresh">
-            ⟳
-          </button>
-        </div>
-      </div>
-
-      <div style={styles.dataTable}>
-        <div style={styles.tableHeader}>
-          <div style={{ textAlign: 'center' }}>
-            <input type="checkbox" />
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-1">Tasker Management</h1>
+            <p className="text-sm text-gray-600">View and manage all registered service providers.</p>
           </div>
-          <div>TASKER</div>
-          <div>SERVICE CATEGORY</div>
-          <div>STATUS</div>
-          <div>RATING</div>
-          <div>EARNINGS</div>
-          <div>ACTIONS</div>
-        </div>
 
-        {taskersData.map((tasker) => (
-          <div key={tasker.id} style={styles.tableRow}>
-            <div style={{ textAlign: 'center' }}>
-              <input type="checkbox" />
-            </div>
-            <div>
-              <div style={styles.taskerInfo}>
-                <div style={styles.taskerAvatar}>{tasker.avatar}</div>
-                <div>
-                  <div style={styles.taskerName}>{tasker.name}</div>
-                  <div style={styles.taskerEmail}>{tasker.email}</div>
-                </div>
-              </div>
-            </div>
-            <div>
-              <div style={styles.categoryBadge}>
-                <span>{tasker.categoryIcon}</span>
-                {tasker.category}
-              </div>
-            </div>
-            <div>
-              <span style={statusStyle(tasker.status)}>
-                {tasker.status}
-              </span>
-            </div>
-            <div>
-              {tasker.rating ? (
-                <div style={styles.ratingDisplay}>
-                  <span>⭐</span>
-                  <span style={styles.ratingValue}>{tasker.rating}</span>
-                  <span style={styles.ratingCount}>({tasker.reviews})</span>
-                </div>
-              ) : (
-                <div style={styles.ratingDisplay}>
-                  <span style={styles.noRating}>-- (0)</span>
-                </div>
-              )}
-            </div>
-            <div>
-              <span style={styles.earningsValue}>{tasker.earnings}</span>
-            </div>
-            <div>
-              <button style={styles.btnMenu}>⋮</button>
-            </div>
-          </div>
-        ))}
-
-        <div style={styles.tableFooter}>
-          <div style={styles.paginationInfo}>
-            Showing <strong>1</strong> to <strong>5</strong> of <strong>2,450</strong> entries
-          </div>
-          <div style={styles.paginationControls}>
-            <span style={styles.rowsLabel}>Rows per page:</span>
-            <select
-              style={styles.rowsSelect}
-              value={rowsPerPage}
-              onChange={(e) => setRowsPerPage(Number(e.target.value))}
+          <div className="flex flex-wrap gap-3">
+            <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+              <DownloadIcon />
+              Export
+            </button>
+            <Link 
+              to="/taskers/create" 
+              className="flex items-center gap-2 px-5 py-2 bg-cyan-500 text-white rounded-lg text-sm font-medium hover:bg-cyan-600 transition-colors"
             >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={25}>25</option>
-              <option value={50}>50</option>
+              <PlusIcon />
+              Add New Tasker
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Filters Bar */}
+      <div className="bg-white border-b border-gray-200 px-4 md:px-8 py-4">
+        <div className="flex flex-col lg:flex-row gap-4">
+          {/* Search */}
+          <div className="flex-1">
+            <div className="relative">
+              <SearchIcon />
+              <input
+                type="text"
+                placeholder="Search by name, email or service..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                <SearchIcon />
+              </div>
+            </div>
+          </div>
+
+          {/* Filters */}
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="text-sm font-medium text-gray-600">Filter by:</span>
+            
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+            >
+              <option value="all">All Status</option>
+              <option value="verified">Verified</option>
+              <option value="pending">Pending</option>
+              <option value="suspended">Suspended</option>
             </select>
-            <div style={styles.pageButtons}>
-              <button style={{ ...styles.pageBtn, ...styles.pageBtnDisabled }} disabled>&lt; Prev</button>
-              <button style={{ ...styles.pageBtn, ...styles.pageBtnActive }}>1</button>
-              <button style={styles.pageBtn}>2</button>
-              <button style={styles.pageBtn}>3</button>
-              <button style={styles.pageBtn}>Next &gt;</button>
+
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+            >
+              <option value="all">Category</option>
+              <option value="cleaning">Cleaning</option>
+              <option value="plumbing">Plumbing</option>
+              <option value="moving">Moving</option>
+              <option value="electrical">Electrical</option>
+              <option value="gardening">Gardening</option>
+            </select>
+
+            <select
+              value={ratingFilter}
+              onChange={(e) => setRatingFilter(e.target.value)}
+              className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+            >
+              <option value="all">Rating</option>
+              <option value="5">5 Stars</option>
+              <option value="4">4+ Stars</option>
+              <option value="3">3+ Stars</option>
+            </select>
+
+            <button 
+              className="p-2 bg-white border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors"
+              title="Refresh"
+            >
+              <RefreshIcon />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="mx-4 md:mx-8 my-6 bg-white rounded-lg border border-gray-200 overflow-hidden">
+        {/* Desktop Table */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="px-6 py-3 text-left">
+                  <input
+                    type="checkbox"
+                    checked={selectedTaskers.length === taskers.length}
+                    onChange={toggleSelectAll}
+                    className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                  />
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Tasker
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Service Category
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Rating
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Earnings
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {taskers.map((tasker) => {
+                const CategoryIcon = categoryIcons[tasker.serviceCategory] || BroomIcon
+                return (
+                  <tr key={tasker.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4">
+                      <input
+                        type="checkbox"
+                        checked={selectedTaskers.includes(tasker.id)}
+                        onChange={() => toggleSelect(tasker.id)}
+                        className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                      />
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <img 
+                          src={tasker.avatar} 
+                          alt={tasker.name}
+                          className="w-10 h-10 rounded-full object-cover"
+                        />
+                        <div>
+                          <div className="text-sm font-semibold text-gray-900">{tasker.name}</div>
+                          <div className="text-xs text-gray-500">{tasker.email}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-gray-100 rounded-md">
+                        <CategoryIcon />
+                        <span className="text-sm font-medium text-gray-700">{tasker.serviceCategory}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getStatusBadge(tasker.status)}`}>
+                        {tasker.status === 'Verified' && '● '}
+                        {tasker.status === 'Pending' && '● '}
+                        {tasker.status === 'Suspended' && '● '}
+                        {tasker.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      {tasker.rating > 0 ? (
+                        <div className="flex items-center gap-1">
+                          <StarIcon className="w-4 h-4 text-amber-400" />
+                          <span className="text-sm font-semibold text-gray-900">{tasker.rating}</span>
+                          <span className="text-xs text-gray-400">({tasker.reviews})</span>
+                        </div>
+                      ) : (
+                        <span className="text-sm text-gray-400">-- (0)</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-sm font-semibold text-gray-900">{tasker.earnings}</span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <button className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors">
+                        <MoreVerticalIcon />
+                      </button>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile Cards */}
+        <div className="md:hidden divide-y divide-gray-100">
+          {taskers.map((tasker) => {
+            const CategoryIcon = categoryIcons[tasker.serviceCategory] || BroomIcon
+            return (
+              <div key={tasker.id} className="p-4 space-y-3">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="checkbox"
+                      checked={selectedTaskers.includes(tasker.id)}
+                      onChange={() => toggleSelect(tasker.id)}
+                      className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 mt-1"
+                    />
+                    <img 
+                      src={tasker.avatar} 
+                      alt={tasker.name}
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
+                    <div>
+                      <div className="text-sm font-semibold text-gray-900">{tasker.name}</div>
+                      <div className="text-xs text-gray-500">{tasker.email}</div>
+                    </div>
+                  </div>
+                  <button className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors">
+                    <MoreVerticalIcon />
+                  </button>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-gray-100 rounded-md">
+                    <CategoryIcon />
+                    <span className="text-xs font-medium text-gray-700">{tasker.serviceCategory}</span>
+                  </div>
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getStatusBadge(tasker.status)}`}>
+                    ● {tasker.status}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-1">
+                    {tasker.rating > 0 ? (
+                      <>
+                        <StarIcon className="w-4 h-4 text-amber-400" />
+                        <span className="font-semibold text-gray-900">{tasker.rating}</span>
+                        <span className="text-xs text-gray-400">({tasker.reviews})</span>
+                      </>
+                    ) : (
+                      <span className="text-gray-400">No rating</span>
+                    )}
+                  </div>
+                  <span className="font-semibold text-gray-900">{tasker.earnings}</span>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Pagination */}
+        <div className="border-t border-gray-200 px-6 py-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="text-sm text-gray-600">
+              Showing <span className="font-medium">{startEntry}</span> to <span className="font-medium">{endEntry}</span> of <span className="font-medium">{totalEntries}</span> entries
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600">Rows per page:</span>
+                <select
+                  value={rowsPerPage}
+                  onChange={(e) => setRowsPerPage(Number(e.target.value))}
+                  className="px-2 py-1 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value={5}>5</option>
+                  <option value={10}>10</option>
+                  <option value={20}>20</option>
+                  <option value={50}>50</option>
+                </select>
+              </div>
+
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                  disabled={currentPage === 1}
+                  className="px-3 py-1.5 border border-gray-200 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Prev
+                </button>
+                {[1, 2, 3].map(page => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`px-3 py-1.5 border rounded-md text-sm font-medium transition-colors ${
+                      currentPage === page
+                        ? 'bg-blue-600 text-white border-blue-600'
+                        : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+                <button
+                  onClick={() => setCurrentPage(currentPage + 1)}
+                  className="px-3 py-1.5 border border-gray-200 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                >
+                  Next
+                </button>
+              </div>
             </div>
           </div>
         </div>

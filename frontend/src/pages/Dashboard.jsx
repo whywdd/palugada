@@ -61,9 +61,11 @@ const summaryCards = [
   { label: 'Tasks Completed', value: '8,943', delta: '+8%', icon: CheckCircleIcon, color: 'text-purple-600' },
 ]
 
+// Chart Data - 7 days (Mon to Sun)
 const chartData = {
-  created: [40, 85, 70, 95, 80, 60, 90, 50, 75, 65, 45, 88, 70, 55, 40, 70, 85, 95, 115, 75, 90, 110],
-  completed: [30, 70, 55, 75, 65, 50, 70, 40, 60, 50, 35, 70, 55, 45, 35, 60, 70, 80, 95, 65, 80, 95]
+  labels: ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'],
+  created: [180, 280, 220, 300, 420, 380, 280],
+  completed: [150, 230, 190, 250, 380, 320, 240]
 }
 
 const categories = [
@@ -106,8 +108,34 @@ const StatCard = ({ item }) => {
 }
 
 const ActivityCard = () => {
-  const maxValue = 120
-  const height = 240
+  const maxValue = Math.max(...chartData.created, ...chartData.completed)
+  const padding = 40
+  const height = 200
+  const width = 600
+
+  // Generate points for the lines
+  const createPoints = (data) => {
+    return data.map((value, index) => {
+      const x = (index / (data.length - 1)) * (width - padding * 2) + padding
+      const y = height - (value / maxValue) * (height - padding) + 20
+      return `${x},${y}`
+    }).join(' ')
+  }
+
+  // Generate path for area fill
+  const createAreaPath = (data) => {
+    const points = data.map((value, index) => {
+      const x = (index / (data.length - 1)) * (width - padding * 2) + padding
+      const y = height - (value / maxValue) * (height - padding) + 20
+      return { x, y }
+    })
+    
+    const pathStart = `M ${points[0].x},${height}`
+    const linePath = points.map(p => `L ${p.x},${p.y}`).join(' ')
+    const pathEnd = `L ${points[points.length - 1].x},${height} Z`
+    
+    return pathStart + linePath + pathEnd
+  }
 
   return (
     <div className="bg-white p-6 rounded-xl border border-gray-200">
@@ -122,37 +150,77 @@ const ActivityCard = () => {
             <span className="text-gray-600">Created</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-blue-200 rounded"></div>
+            <div className="w-3 h-3 bg-blue-300 rounded"></div>
             <span className="text-gray-600">Completed</span>
           </div>
         </div>
       </div>
 
       <div className="mb-4">
-        <span className="text-3xl font-bold text-gray-900">2,430</span>
+        <span className="text-3xl font-bold text-gray-900">2,060</span>
         <span className="text-sm text-gray-600 ml-2">Tasks this week</span>
         <span className="text-sm text-emerald-600 font-medium ml-3">+12.5%</span>
       </div>
 
-      <div className="relative h-60">
-        <svg width="100%" height="100%" className="overflow-visible">
+      <div className="relative" style={{ height: `${height + 40}px` }}>
+        <svg 
+          width="100%" 
+          height="100%" 
+          viewBox={`0 0 ${width} ${height + 40}`}
+          preserveAspectRatio="none"
+          className="overflow-visible"
+        >
+          {/* Grid lines */}
           {[0, 1, 2, 3, 4].map((i) => (
             <line
               key={i}
-              x1="0"
-              y1={i * 60}
-              x2="100%"
-              y2={i * 60}
+              x1={padding}
+              y1={20 + (i * (height - padding) / 4)}
+              x2={width - padding}
+              y2={20 + (i * (height - padding) / 4)}
               stroke="#E5E7EB"
               strokeDasharray="4 4"
               strokeWidth="1"
             />
           ))}
           
+          {/* Area fills with gradient */}
+          <defs>
+            <linearGradient id="createdGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.3"/>
+              <stop offset="100%" stopColor="#3B82F6" stopOpacity="0"/>
+            </linearGradient>
+            <linearGradient id="completedGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#93C5FD" stopOpacity="0.3"/>
+              <stop offset="100%" stopColor="#93C5FD" stopOpacity="0"/>
+            </linearGradient>
+          </defs>
+          
+          {/* Completed area (behind) */}
+          <path
+            d={createAreaPath(chartData.completed)}
+            fill="url(#completedGradient)"
+          />
+          
+          {/* Created area */}
+          <path
+            d={createAreaPath(chartData.created)}
+            fill="url(#createdGradient)"
+          />
+          
+          {/* Completed line */}
           <polyline
-            points={chartData.created.map((val, i) => 
-              `${(i / (chartData.created.length - 1)) * 100}%,${height - (val / maxValue) * height}`
-            ).join(' ')}
+            points={createPoints(chartData.completed)}
+            fill="none"
+            stroke="#93C5FD"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          
+          {/* Created line */}
+          <polyline
+            points={createPoints(chartData.created)}
             fill="none"
             stroke="#3B82F6"
             strokeWidth="3"
@@ -160,27 +228,59 @@ const ActivityCard = () => {
             strokeLinejoin="round"
           />
           
-          <polyline
-            points={chartData.completed.map((val, i) => 
-              `${(i / (chartData.completed.length - 1)) * 100}%,${height - (val / maxValue) * height}`
-            ).join(' ')}
-            fill="none"
-            stroke="#93C5FD"
-            strokeWidth="3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
+          {/* Data points for Created */}
+          {chartData.created.map((value, index) => {
+            const x = (index / (chartData.created.length - 1)) * (width - padding * 2) + padding
+            const y = height - (value / maxValue) * (height - padding) + 20
+            return (
+              <circle
+                key={`created-${index}`}
+                cx={x}
+                cy={y}
+                r="4"
+                fill="#3B82F6"
+                stroke="white"
+                strokeWidth="2"
+                className="hover:r-6 transition-all cursor-pointer"
+              />
+            )
+          })}
+          
+          {/* Data points for Completed */}
+          {chartData.completed.map((value, index) => {
+            const x = (index / (chartData.completed.length - 1)) * (width - padding * 2) + padding
+            const y = height - (value / maxValue) * (height - padding) + 20
+            return (
+              <circle
+                key={`completed-${index}`}
+                cx={x}
+                cy={y}
+                r="4"
+                fill="#93C5FD"
+                stroke="white"
+                strokeWidth="2"
+                className="hover:r-6 transition-all cursor-pointer"
+              />
+            )
+          })}
+          
+          {/* X-axis labels */}
+          {chartData.labels.map((label, index) => {
+            const x = (index / (chartData.labels.length - 1)) * (width - padding * 2) + padding
+            return (
+              <text
+                key={label}
+                x={x}
+                y={height + 30}
+                textAnchor="middle"
+                className="text-xs fill-gray-400"
+                style={{ fontSize: '10px' }}
+              >
+                {label}
+              </text>
+            )
+          })}
         </svg>
-      </div>
-      
-      <div className="flex justify-between mt-3 text-xs text-gray-400 uppercase">
-        <span>MON</span>
-        <span>TUE</span>
-        <span>WED</span>
-        <span>THU</span>
-        <span>FRI</span>
-        <span>SAT</span>
-        <span>SUN</span>
       </div>
     </div>
   )
