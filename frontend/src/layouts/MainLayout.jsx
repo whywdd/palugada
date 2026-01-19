@@ -1,28 +1,11 @@
 import Sidebar from './Sidebar.jsx'
 
-const styles = {
-  shell: {
-    display: 'flex',
-    minHeight: '100vh',
-    backgroundColor: '#F9FAFB'
-  },
-  main: {
-    marginLeft: '240px',
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column'
-  },
-  mainContent: {
-    flex: 1
-  }
-}
-
 export default function MainLayout({ children }) {
   return (
-    <div style={styles.shell}>
+    <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
-      <main style={styles.main}>
-        <div style={styles.mainContent}>
+      <main className="flex-1 lg:ml-60">
+        <div className="flex-1">
           {children}
         </div>
       </main>
